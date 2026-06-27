@@ -155,6 +155,11 @@ const experienceLinkBox = document.querySelector("#experienceLinkBox");
 const experienceLinkTitle = document.querySelector("#experienceLinkTitle");
 const experienceLinks = document.querySelector("#experienceLinks");
 
+const weatherEmoji = document.querySelector("#weatherEmoji");
+const weatherTitle = document.querySelector("#weatherTitle");
+const weatherText = document.querySelector("#weatherText");
+const weatherMeta = document.querySelector("#weatherMeta");
+
 let lastPlanKey = null;
 
 function showScreen(name) {
@@ -207,7 +212,7 @@ function selectPlan(key) {
   resultBackup.textContent = plan.backup;
   renderLinks(plan);
 
-  const message = `Ho scelto ${plan.emoji} ${plan.title}. Organizzati amore, mi devi portare via ❤️`;
+  const message = `Ho scelto ${plan.emoji} ${plan.title}. Organizzati amo, mi devi portare via ❤️`;
   whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
   showScreen("result");
@@ -242,6 +247,94 @@ function softHeart() {
   heart.addEventListener("animationend", () => heart.remove(), { once: true });
 }
 
+function getWeatherMood({ apparentTemp, maxRainChance, currentRain, weatherCode }) {
+  const rainyCodes = new Set([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99]);
+  const cloudyCodes = new Set([1, 2, 3, 45, 48]);
+  const storm = weatherCode >= 95;
+  const rainy = rainyCodes.has(weatherCode) || maxRainChance >= 55 || currentRain > 0;
+
+  if (storm) {
+    return {
+      emoji: "⛈️",
+      title: "Il cielo sta facendo una sceneggiata",
+      text: `Temporali possibili: oggi il cielo vuole essere protagonista. Outdoor solo se siamo coraggiosi o incoscienti; shopping/VR/bar vincono a mani basse.`,
+    };
+  }
+
+  if (rainy) {
+    return {
+      emoji: "🌧️",
+      title: "Piove? Che comportamento tossico",
+      text: `Rischio acqua nelle prossime ore: ${maxRainChance}%. L’Orrido è già umido di suo, il cielo poteva evitare. Piano coperto fortemente candidato.`,
+    };
+  }
+
+  if (apparentTemp >= 34) {
+    return {
+      emoji: "🥵",
+      title: "Trento modalità forno ventilato",
+      text: `Percepiti ${apparentTemp}°C: uscire senza gelato è autolesionismo elegante. Lido, lago o qualunque posto con acqua diventano scelte moralmente superiori.`,
+    };
+  }
+
+  if (apparentTemp >= 30) {
+    return {
+      emoji: "🌡️",
+      title: "Fa caldo, ma non siamo deboli",
+      text: `Percepiti ${apparentTemp}°C: il sole sta facendo il fenomeno. Si può uscire, ma con bibita fredda e piano che non richieda eroismi inutili.`,
+    };
+  }
+
+  if (cloudyCodes.has(weatherCode)) {
+    return {
+      emoji: "☁️",
+      title: "Nuvole in modalità comparse",
+      text: "Meteo abbastanza civile: non bellissimo, non tragico. Tradotto: possiamo scegliere quasi tutto e dare la colpa al cielo solo se serve.",
+    };
+  }
+
+  return {
+    emoji: "🌤️",
+    title: "Meteo stranamente collaborativo",
+    text: "Il cielo oggi non sta sabotando la relazione. Lago, Orrido, passeggiata o lido: quasi tutto ha senso, incredibile ma vero.",
+  };
+}
+
+async function loadWeather() {
+  if (!weatherEmoji || !weatherTitle || !weatherText || !weatherMeta) return;
+
+  const url = "https://api.open-meteo.com/v1/forecast?latitude=46.070&longitude=11.121&current=temperature_2m,apparent_temperature,precipitation,rain,weather_code&hourly=precipitation_probability&forecast_days=1&timezone=Europe%2FRome";
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Meteo non disponibile");
+
+    const data = await response.json();
+    const current = data.current || {};
+    const hourly = data.hourly || {};
+    const now = Date.now();
+    const nextHours = (hourly.time || [])
+      .map((time, index) => ({ time: new Date(time).getTime(), rainChance: hourly.precipitation_probability?.[index] ?? 0 }))
+      .filter((item) => item.time >= now - 30 * 60 * 1000 && item.time <= now + 5 * 60 * 60 * 1000);
+
+    const maxRainChance = nextHours.length ? Math.max(...nextHours.map((item) => item.rainChance)) : 0;
+    const apparentTemp = Math.round(Number.isFinite(current.apparent_temperature) ? current.apparent_temperature : current.temperature_2m ?? 0);
+    const currentRain = Number(current.precipitation || current.rain || 0);
+    const weatherCode = Number(current.weather_code ?? 0);
+    const mood = getWeatherMood({ apparentTemp, maxRainChance, currentRain, weatherCode });
+
+    weatherEmoji.textContent = mood.emoji;
+    weatherTitle.textContent = mood.title;
+    weatherText.textContent = mood.text;
+    weatherMeta.textContent = `Trento · percepiti ${apparentTemp}°C · rischio pioggia ${maxRainChance}% · dati live`;
+  } catch (error) {
+    weatherEmoji.textContent = "🫠";
+    weatherTitle.textContent = "Il meteo oggi fa il misterioso";
+    weatherText.textContent = "Non riesco a leggere il cielo. Classico: quando serve collaborare, sparisce. Meglio controllare al volo dal telefono prima di partire.";
+    weatherMeta.textContent = "Trento · meteo non disponibile · colpa sua, non nostra";
+  }
+}
+
 yesBtn.addEventListener("click", () => {
   showScreen("mood");
   softHeart();
@@ -259,3 +352,4 @@ changeMoodBtn.addEventListener("click", () => showScreen("mood"));
 rerollBtn.addEventListener("click", () => selectPlan("random"));
 
 renderMoodCards();
+loadWeather();
