@@ -274,18 +274,35 @@ h2 {
 
 .experience-link strong {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   color: var(--ink);
 }
 
-.experience-link a {
-  color: var(--brand-dark);
-  font-weight: 800;
-  text-decoration: none;
-  border-bottom: 2px solid rgba(233, 79, 130, 0.24);
+.experience-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.experience-link a:hover { border-bottom-color: var(--brand-dark); }
+.experience-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: var(--brand-dark);
+  background: rgba(255, 255, 255, 0.84);
+  font-weight: 800;
+  text-decoration: none;
+  border: 1px solid rgba(233, 79, 130, 0.22);
+  box-shadow: 0 8px 20px rgba(133, 57, 82, 0.07);
+}
+
+.experience-links a:hover {
+  transform: translateY(-1px);
+  border-color: rgba(233, 79, 130, 0.55);
+}
 
 .info-list {
   display: grid;
@@ -376,4 +393,5 @@ blockquote {
   .question-card, .result-card { border-radius: 28px; }
   .primary-btn, .ghost-btn { width: 100%; }
   .text-btn { width: auto; }
+  .experience-links a { width: 100%; }
 }
