@@ -248,11 +248,44 @@ h2 {
 
 .result-description {
   max-width: 580px;
-  margin: 14px auto 24px;
+  margin: 14px auto 20px;
   color: var(--muted);
   line-height: 1.62;
   font-size: 1.05rem;
 }
+
+.experience-link {
+  max-width: 580px;
+  margin: 0 auto 22px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 111, 159, 0.18);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.70);
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: start;
+  text-align: left;
+}
+
+.experience-link[hidden] { display: none; }
+
+.experience-link span { font-size: 1.35rem; }
+
+.experience-link strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.experience-link a {
+  color: var(--brand-dark);
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(233, 79, 130, 0.24);
+}
+
+.experience-link a:hover { border-bottom-color: var(--brand-dark); }
 
 .info-list {
   display: grid;
@@ -307,13 +340,16 @@ blockquote {
 
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-#confetti {
+.heart-pop {
   position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%) scale(0.8);
   pointer-events: none;
-  z-index: 4;
+  font-size: 2.3rem;
+  opacity: 0;
+  animation: heartPop 0.85s ease forwards;
+  z-index: 3;
 }
 
 @keyframes pop {
@@ -324,6 +360,12 @@ blockquote {
 @keyframes float {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50% { transform: translate3d(10px, -18px, 0); }
+}
+
+@keyframes heartPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  35% { opacity: 1; transform: translate(-50%, -70%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -115%) scale(1.18); }
 }
 
 @media (max-width: 720px) {
