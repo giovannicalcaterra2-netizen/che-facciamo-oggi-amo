@@ -4,11 +4,13 @@ const plans = [
     emoji: "🌊",
     title: "Mood lago ma chill",
     short: "Caldonazzo o Calceranica, aria estiva e gelatino.",
-    description: "Partiamo senza fretta, ci facciamo un giro sul lago, due passi, gelato o bibita fresca e poi decidiamo se restare per il tramonto. Niente sbatti, solo vibe bella.",
+    description: "Partiamo senza fretta, ci facciamo un giro sul lago, due passi, gelato o bibita fresca e poi decidiamo se restare per il tramonto. Se ci va possiamo anche passare dalla zona della Color Run per respirare un po’ di vibe estiva.",
     time: "Ritrovo verso le 16:00, così recuperiamo con calma dopo pranzo.",
     budget: "Basso: gelato/bibita e benzina, senza aperitivi pesanti.",
     dress: "Comoda, scarpe tranquille, magari costume o telo se ti va.",
     backup: "Se il cielo minaccia, restiamo più vicini a Trento e trasformiamo tutto in gelato + passeggiata coperta.",
+    linkText: "Guarda la Calceranica Lake Color Run",
+    linkUrl: "https://www.visittrentino.info/it/guida/cosa-fare/eventi/calceranica-lake-color-run-2026_e_131826492",
   },
   {
     key: "easy",
@@ -39,20 +41,24 @@ const plans = [
     short: "Bondone o Viote, fresco e mini passeggiata.",
     description: "Se il meteo ci concede tregua, saliamo un po’ e cerchiamo fresco. Mini passeggiata, aria pulita, foto carine e rientro quando ci va. Molto da coppietta sana, ma senza dirlo troppo forte.",
     time: "Partenza intorno alle 16:00, così non corriamo.",
-    budget: "Quasi gratis: solo benzina e magari merenda.",
+    budget: "Quasi gratis: solo benzina e magari merenda. Se entriamo al Giardino Botanico, budget comunque tranquillo.",
     dress: "Scarpe comode e felpina leggera se saliamo.",
     backup: "Se il meteo è brutto, niente eroismi: scegliamo il mood gelato o VR in centro.",
+    linkText: "Guarda il Giardino Botanico Alpino Viote",
+    linkUrl: "https://www.muse.it/home/scopri-il-museo/il-muse-sul-territorio/giardino-botanico-alpino/",
   },
   {
     key: "strano",
     emoji: "🥽",
     title: "Mood sorpresa strana ma carina",
     short: "Cappella Vantini VR + giro in centro.",
-    description: "Facciamo una cosina diversa dal solito: esperienza VR a Cappella Vantini, poi giretto in centro e gelato. È il piano perfetto se vogliamo dire: ‘non sapevamo cosa fare, quindi abbiamo fatto una cosa buffa’. ",
+    description: "Facciamo una cosina diversa dal solito: esperienza VR a Cappella Vantini, poi giretto in centro e gelato. È il piano perfetto se vogliamo dire: ‘non sapevamo cosa fare, quindi abbiamo fatto una cosa buffa’.",
     time: "Perfetto dalle 16:00 in poi.",
     budget: "Molto basso: attività gratuita + gelato/bibita.",
     dress: "Normale da centro, ma con mentalità da esploratrice.",
     backup: "È già abbastanza piano B, perché resta in città e vicino ai posti coperti.",
+    linkText: "Guarda l’esperienza VR a Cappella Vantini",
+    linkUrl: "https://www.visittrento.it/it/eventi/antiche-storie-d-acqua-a-cappella-vantini-torna-la-realta-virtuale",
   },
   {
     key: "random",
@@ -89,6 +95,8 @@ const resultTime = document.querySelector("#resultTime");
 const resultBudget = document.querySelector("#resultBudget");
 const resultDress = document.querySelector("#resultDress");
 const resultBackup = document.querySelector("#resultBackup");
+const experienceLinkBox = document.querySelector("#experienceLinkBox");
+const experienceLink = document.querySelector("#experienceLink");
 
 let lastPlanKey = null;
 
@@ -125,11 +133,21 @@ function selectPlan(key) {
   resultDress.textContent = plan.dress;
   resultBackup.textContent = plan.backup;
 
+  if (plan.linkUrl) {
+    experienceLinkBox.hidden = false;
+    experienceLink.href = plan.linkUrl;
+    experienceLink.textContent = plan.linkText || "Apri il sito dell’esperienza";
+  } else {
+    experienceLinkBox.hidden = true;
+    experienceLink.removeAttribute("href");
+    experienceLink.textContent = "";
+  }
+
   const message = `Ho scelto ${plan.emoji} ${plan.title}. Organizzati amore, mi devi portare via ❤️`;
   whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
   showScreen("result");
-  burstConfetti();
+  softHeart();
 }
 
 function getRandomPlan() {
@@ -152,9 +170,17 @@ function showToast() {
   showToast.timeout = setTimeout(() => toast.classList.remove("show"), 1600);
 }
 
+function softHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart-pop";
+  heart.textContent = "❤️";
+  document.body.appendChild(heart);
+  heart.addEventListener("animationend", () => heart.remove(), { once: true });
+}
+
 yesBtn.addEventListener("click", () => {
   showScreen("mood");
-  burstConfetti(36);
+  softHeart();
 });
 
 ["mouseenter", "touchstart", "focus", "click"].forEach((eventName) => {
@@ -169,64 +195,3 @@ changeMoodBtn.addEventListener("click", () => showScreen("mood"));
 rerollBtn.addEventListener("click", () => selectPlan("random"));
 
 renderMoodCards();
-
-// Confetti leggero, senza librerie esterne.
-const canvas = document.querySelector("#confetti");
-const ctx = canvas.getContext("2d");
-let pieces = [];
-let animationId = null;
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth * window.devicePixelRatio;
-  canvas.height = window.innerHeight * window.devicePixelRatio;
-  ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-}
-
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-
-function burstConfetti(amount = 64) {
-  const symbols = ["❤️", "✨", "🌸", "🍦", "🌊", "🧺"];
-  pieces = Array.from({ length: amount }, () => ({
-    x: window.innerWidth / 2 + (Math.random() - 0.5) * 120,
-    y: window.innerHeight * 0.22 + (Math.random() - 0.5) * 80,
-    vx: (Math.random() - 0.5) * 9,
-    vy: Math.random() * -6 - 2,
-    gravity: 0.18 + Math.random() * 0.08,
-    rotation: Math.random() * Math.PI,
-    spin: (Math.random() - 0.5) * 0.18,
-    size: 18 + Math.random() * 14,
-    symbol: symbols[Math.floor(Math.random() * symbols.length)],
-    life: 90 + Math.random() * 35,
-  }));
-
-  if (!animationId) animateConfetti();
-}
-
-function animateConfetti() {
-  animationId = requestAnimationFrame(animateConfetti);
-  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-  pieces.forEach((piece) => {
-    piece.x += piece.vx;
-    piece.y += piece.vy;
-    piece.vy += piece.gravity;
-    piece.rotation += piece.spin;
-    piece.life -= 1;
-
-    ctx.save();
-    ctx.translate(piece.x, piece.y);
-    ctx.rotate(piece.rotation);
-    ctx.font = `${piece.size}px serif`;
-    ctx.globalAlpha = Math.max(piece.life / 110, 0);
-    ctx.fillText(piece.symbol, 0, 0);
-    ctx.restore();
-  });
-
-  pieces = pieces.filter((piece) => piece.life > 0 && piece.y < window.innerHeight + 50);
-  if (!pieces.length) {
-    cancelAnimationFrame(animationId);
-    animationId = null;
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  }
-}
