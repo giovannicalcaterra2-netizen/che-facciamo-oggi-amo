@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#ff7aa8" />
-  <title>Che facciamo oggi, amore?</title>
+  <title>Che facciamo oggi, amo?</title>
   <meta name="description" content="Un mini gioco romantico per scegliere cosa fare oggi pomeriggio." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
   <main class="app" id="app">
     <section class="screen active" id="screen-start" aria-labelledby="start-title">
       <p class="eyebrow">missione pomeriggio</p>
-      <h1 id="start-title">Che facciamo oggi, amore?</h1>
+      <h1 id="start-title">Che facciamo oggi, amo?</h1>
       <p class="subtitle">Ho preparato un mini giochino perché sono un bravo ragazzo e perché scegliere insieme è più bello.</p>
 
       <div class="question-card">
@@ -37,6 +37,17 @@
       <p class="eyebrow">step 2</p>
       <h2 id="mood-title">Scegli il mood di oggi</h2>
       <p class="subtitle">Tu scegli l’emoji, io mi occupo della mini avventura.</p>
+
+      <aside class="weather-widget" id="weatherWidget" aria-live="polite">
+        <div class="weather-main">
+          <span class="weather-emoji" id="weatherEmoji">🌤️</span>
+          <div>
+            <strong id="weatherTitle">Meteo anti-sfiga</strong>
+            <p id="weatherText">Sto interrogando il cielo di Trento. Se risponde male lo insultiamo con eleganza.</p>
+          </div>
+        </div>
+        <div class="weather-meta" id="weatherMeta">Trento · dati live in arrivo</div>
+      </aside>
 
       <div class="mood-grid" id="moodGrid"></div>
 
