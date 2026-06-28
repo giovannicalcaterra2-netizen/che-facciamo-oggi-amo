@@ -69,7 +69,7 @@
           </div>
         </div>
 
-        <div class="info-list">
+        <div class="info-list" id="infoList">
           <div>
             <span>🕒</span>
             <p id="resultTime"></p>
@@ -88,11 +88,21 @@
           </div>
         </div>
 
+        <div class="proposal-box" id="proposalBox" hidden>
+          <label for="proposalInput">
+            <strong>Ok, allora proponi tu, signorina difficile.</strong>
+            <span>Scrivi una proposta alternativa e mandala a Gio in formato drammaticamente ufficiale.</span>
+          </label>
+          <textarea id="proposalInput" rows="4" maxlength="500" placeholder="Es. Gelato in centro e poi mi accompagni a prendere un caffè prima del lavoro..."></textarea>
+          <a class="primary-btn link-btn" id="proposalMailBtn" href="mailto:giovannicalcaterra2@gmail.com">Manda la controproposta a Gio 💌</a>
+          <p class="proposal-note">Si apre la mail già compilata: devi solo premere invia, non fare la finta timida.</p>
+        </div>
+
         <blockquote>Qualunque cosa scegli, il vero piano era solo passare un po’ di tempo con te.</blockquote>
 
         <div class="actions">
           <a class="primary-btn link-btn" id="whatsappBtn" target="_blank" rel="noopener">Confermo, portami via ❤️</a>
-          <button class="ghost-btn" id="rerollBtn">Fammi vedere un’altra idea 🎲</button>
+          <button class="ghost-btn" id="rerollBtn">Non mi piace nessuna di queste idee 💀</button>
           <button class="text-btn" id="changeMoodBtn">Cambio mood</button>
         </div>
       </div>
