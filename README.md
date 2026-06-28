@@ -17,6 +17,9 @@ Mini sito statico romantico/ironico per scegliere un pomeriggio insieme tramite 
 ## Proposte incluse
 
 - 🏞️ Orrido di Ponte Alto
+- 🧬 MUSE
+- 🕳️ Trento sotterranea / S.A.S.S.
+- 🖼️ Gallerie di Piedicastello
 - 🏊 Lido / piscina
 - 🛍️ Shopping tranquillo: Adigeo, centro Trento, Top Center
 - 🌊 Lago / Calceranica
