@@ -377,6 +377,66 @@ h2 {
 .info-list span { font-size: 1.25rem; }
 .info-list p { margin: 0; color: var(--muted); line-height: 1.45; }
 
+.proposal-box {
+  max-width: 580px;
+  margin: 22px auto 0;
+  padding: 18px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 111, 159, 0.20);
+  box-shadow: 0 14px 36px rgba(133, 57, 82, 0.10);
+  text-align: left;
+}
+
+.proposal-box[hidden] { display: none; }
+
+.proposal-box label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.proposal-box label strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.proposal-box label span,
+.proposal-note {
+  color: var(--muted);
+  line-height: 1.45;
+  font-size: 0.92rem;
+}
+
+.proposal-box textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 112px;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(233, 79, 130, 0.22);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  outline: none;
+  line-height: 1.45;
+}
+
+.proposal-box textarea:focus {
+  border-color: rgba(233, 79, 130, 0.58);
+  box-shadow: 0 0 0 4px rgba(255, 111, 159, 0.12);
+}
+
+.proposal-box .link-btn {
+  width: 100%;
+  margin-top: 2px;
+}
+
+.proposal-note {
+  margin: 10px 0 0;
+  text-align: center;
+}
+
 blockquote {
   margin: 24px auto;
   padding: 18px 20px;
