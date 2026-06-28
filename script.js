@@ -205,12 +205,16 @@ const resultBackup = document.querySelector("#resultBackup");
 const experienceLinkBox = document.querySelector("#experienceLinkBox");
 const experienceLinkTitle = document.querySelector("#experienceLinkTitle");
 const experienceLinks = document.querySelector("#experienceLinks");
+const proposalBox = document.querySelector("#proposalBox");
+const proposalInput = document.querySelector("#proposalInput");
+const proposalMailBtn = document.querySelector("#proposalMailBtn");
 
 const weatherEmoji = document.querySelector("#weatherEmoji");
 const weatherTitle = document.querySelector("#weatherTitle");
 const weatherText = document.querySelector("#weatherText");
 const weatherMeta = document.querySelector("#weatherMeta");
 
+const GIO_EMAIL = "giovannicalcaterra2@gmail.com";
 let lastPlanKey = null;
 
 function showScreen(name) {
@@ -249,6 +253,13 @@ function renderLinks(plan) {
   `).join("");
 }
 
+function hideProposalBox() {
+  if (!proposalBox) return;
+  proposalBox.hidden = true;
+  if (proposalInput) proposalInput.value = "";
+  updateProposalMailLink();
+}
+
 function selectPlan(key) {
   const plan = key === "random" ? getRandomPlan() : plans.find((item) => item.key === key);
   if (!plan) return;
@@ -262,7 +273,9 @@ function selectPlan(key) {
   resultDress.textContent = plan.dress;
   resultBackup.textContent = plan.backup;
   renderLinks(plan);
+  hideProposalBox();
 
+  whatsappBtn.hidden = false;
   const message = `Ho scelto ${plan.emoji} ${plan.title}. Organizzati amo, mi devi portare via ❤️`;
   whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
@@ -270,9 +283,36 @@ function selectPlan(key) {
   softHeart();
 }
 
+function showRejection() {
+  lastPlanKey = null;
+  resultEmoji.textContent = "💀";
+  resultTitle.textContent = "Ok, allora ti lascio e vado con “Gessikah”";
+  resultDescription.textContent = "Rifiutare tutte queste idee è un atto gravissimo. Puoi sempre rimediare scegliendone una tra le proposte oppure proponendone una tu, ma deve essere convincente: la concorrenza sentimentale è spietata.";
+  resultTime.textContent = "Decorrenza della crisi: immediata, ma reversibile se arriva una controproposta valida.";
+  resultBudget.textContent = "Costo affettivo altissimo. Gessikah, dicono, porta pure i buoni sconto.";
+  resultDress.textContent = "Scarpe comode per rincorrermi metaforicamente mentre faccio il ferito elegante.";
+  resultBackup.textContent = "Backup: scegli una delle idee sopra o scrivi qui sotto la tua proposta geniale.";
+  experienceLinkBox.hidden = true;
+  experienceLinks.innerHTML = "";
+  whatsappBtn.hidden = true;
+  if (proposalBox) proposalBox.hidden = false;
+  updateProposalMailLink();
+  showScreen("result");
+  showToastMessage("Gessikah è stata avvisata. Forse.");
+  softHeart();
+}
+
 function getRandomPlan() {
   const realPlans = plans.filter((plan) => plan.key !== "random" && plan.key !== lastPlanKey);
   return realPlans[Math.floor(Math.random() * realPlans.length)];
+}
+
+function updateProposalMailLink() {
+  if (!proposalMailBtn) return;
+  const proposal = proposalInput?.value.trim() || "[Leti non ha ancora scritto la proposta, ma pretende comunque di vincere la trattativa.]";
+  const subject = "💀 Leti ha una controproposta";
+  const body = `Caro Gio,\n\nho rifiutato tutte le tue idee, con grande coraggio e forse poca riconoscenza.\n\nLa mia controproposta è:\n\n${proposal}\n\nNota ufficiale: Gessikah può aspettare.\n\nFirmato,\nLeti, detta anche la commissione giudicante.`;
+  proposalMailBtn.href = `mailto:${GIO_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 function moveNoButton() {
@@ -285,9 +325,14 @@ function moveNoButton() {
 }
 
 function showToast() {
+  showToastMessage("Ehi, il no non è previsto dal regolamento.");
+}
+
+function showToastMessage(message) {
+  toast.textContent = message;
   toast.classList.add("show");
-  clearTimeout(showToast.timeout);
-  showToast.timeout = setTimeout(() => toast.classList.remove("show"), 1600);
+  clearTimeout(showToastMessage.timeout);
+  showToastMessage.timeout = setTimeout(() => toast.classList.remove("show"), 1700);
 }
 
 function softHeart() {
@@ -413,9 +458,11 @@ yesBtn.addEventListener("click", () => {
   }, { passive: false });
 });
 
+proposalInput?.addEventListener("input", updateProposalMailLink);
 backToStart.addEventListener("click", () => showScreen("start"));
 changeMoodBtn.addEventListener("click", () => showScreen("mood"));
-rerollBtn.addEventListener("click", () => selectPlan("random"));
+rerollBtn.addEventListener("click", showRejection);
 
 renderMoodCards();
+updateProposalMailLink();
 loadWeather();
